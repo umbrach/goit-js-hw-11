@@ -1,5 +1,5 @@
-export default function renderImageCard(arr, gallery) {
-  const markup = arr
+export default function renderImages (images, gallery) {
+  const markup = images
     .map(
       img => `<div class="photo-card">
           <a href="${img.largeImageURL}">
