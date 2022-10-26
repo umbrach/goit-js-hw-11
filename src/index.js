@@ -1,12 +1,14 @@
+import Notiflix from 'notiflix';
+
 import fetchImages from './js/fetchImages';
 import renderImages from './js/markupImages';
-import Notiflix from 'notiflix';
+
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const searchForm = document.querySelector('.search-form');
-const gallery = document.querySelector('.gallery');
-const loadMoreButton = document.querySelector('.load-more');
+const searchFormEl = document.querySelector('.search-form');
+const galleryEl = document.querySelector('.gallery');
+const loadMoreButtonEl = document.querySelector('.load-more');
 
 let searchQuery = '';
 let currentPage = 1;
@@ -27,25 +29,25 @@ async function onSearchSubmit(event) {
   currentHits = response.hits.length;
   console.log(response);
   if (response.totalHits > 40) {
-    loadMoreButton.classList.remove('is-hidden');
+    loadMoreButtonEl.classList.remove('is-hidden');
   } else {
-    loadMoreButton.classList.add('is-hidden');
+    loadMoreButtonEl.classList.add('is-hidden');
   }
 
   try {
     if (response.totalHits > 0) {
       Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
-      gallery.innerHTML = '';
-      renderImages(response.hits, gallery);
+      galleryEl.innerHTML = '';
+      renderImages(response.hits, galleryEl);
       lightbox.refresh();
     }
 
     if (response.totalHits === 0) {
-      gallery.innerHTML = '';
+      galleryEl.innerHTML = '';
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-      loadMoreButton.classList.add('is-hidden');
+      loadMoreButtonEl.classList.add('is-hidden');
     }
   } catch (error) {
     console.log(error);
@@ -56,7 +58,7 @@ async function onLoadMoreClick() {
   currentPage += 1;
   const response = await fetchImages(searchQuery, currentPage);
   console.log(response);
-  renderImages(response.hits, gallery);
+  renderImages(response.hits, galleryEl);
   lightbox.refresh();
   currentHits += response.hits.length;
   console.log(currentHits);
@@ -64,12 +66,12 @@ async function onLoadMoreClick() {
     Notiflix.Notify.warning(
       `We're sorry, but you've reached the end of search results.`
     );
-    loadMoreButton.classList.add('is-hidden');
+    loadMoreButtonEl.classList.add('is-hidden');
   }
 }
 
-searchForm.addEventListener('submit', onSearchSubmit);
-loadMoreButton.addEventListener('click', onLoadMoreClick);
+searchFormEl.addEventListener('submit', onSearchSubmit);
+loadMoreButtonEl.addEventListener('click', onLoadMoreClick);
 
 let lightbox = new SimpleLightbox('.photo-card a', {
   captions: true,
